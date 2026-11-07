@@ -26,7 +26,7 @@ reconciles it (polling for new commits and refreshing drift).
 - A **ConfigMap** holding a Pulumi-branded static site (inlined Pulumipus SVG,
   Bootstrap 5 responsive layout) + Nginx config, with the live API Gateway URL
   substituted in at deploy time.
-- An **Nginx Deployment** (2 replicas, readiness/liveness on `/healthz`).
+- An **Nginx Deployment** (3 replicas, readiness/liveness on `/healthz`).
 - A **Service** of `type: LoadBalancer` exposing the site publicly.
 
 ## What the frontend looks like
