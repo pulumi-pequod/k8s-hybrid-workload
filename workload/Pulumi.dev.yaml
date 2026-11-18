@@ -1,0 +1,3 @@
+config:
+  k8s-hybrid-app:pulumiAccessToken:
+    secure: AAABANmU6RZqiK6nF76tJBl08KO2Wq9GaebK0L6LbGdx2cAHp2xehp8Kng+3vJ2kaV2hGrCG0YyJ1IHPP5ezJhMY9hP5ZQNvxHQl9g==
