@@ -5,4 +5,4 @@ config:
   k8s-hybrid-workload:projectRepo: https://github.com/pulumi-pequod/k8s-hybrid-workload.git
   k8s-hybrid-workload:branch: refs/heads/main
   k8s-hybrid-workload:pulumiAccessToken:
-    secure: AAABAAOj4tOSZv4Vz7A9WcCQ4C2tjN660/xSRSz9vHvGXToNcLEBmhSId5hlksCdMgtW7sndbqwtxwSIIpHdmQ5xn3kp3fCqy+ynTQ==
+    secure: AAABALZkMNwsdFM0vh1gwcPsfPVtqUrfK/ZED9lMCEoVJ1GyfTOPhvRPGWuYxeHYeu//D+fZt5hwKZobKhtdJj9eVmS2CWz7I+og+g==
