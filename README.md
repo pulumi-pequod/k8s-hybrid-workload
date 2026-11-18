@@ -64,7 +64,7 @@ flowchart TB
             OP["PKO controller-manager"]
             CR["Stack CR<br/>k8s-hybrid-workload"]
             WS["Workspace pod<br/>(runs pulumi up)"]
-            SEC["Secrets:<br/>pulumi-api-secret<br/>git-auth-secret"]
+            SEC["Secret:<br/>pulumi-api-secret"]
             FE["Nginx Deployment + Service<br/>(LoadBalancer)"]
         end
     end
@@ -77,7 +77,7 @@ flowchart TB
 
     CLI -->|applies Stack CR + Secrets + RBAC| CR
     CLI -.reads kubeconfig.-> K8SENV
-    REPO -->|clone via gitAuth token| WS
+    REPO -->|anonymous clone (public repo)| WS
     CR --> OP
     OP -->|creates & reconciles| WS
     SEC -->|PULUMI_ACCESS_TOKEN / git token| WS
@@ -110,14 +110,13 @@ flowchart TB
 ## Configuration variables
 
 All variables are set on the **deployer** stack (`k8s-hybrid-workload`) via
-`pulumi config`. Sensible defaults exist for everything except the two secrets.
+`pulumi config`. Sensible defaults exist for everything except `pulumiAccessToken`.
 
 ### Required secrets
 
 | Config key | How to set | Purpose |
 | --- | --- | --- |
 | `pulumiAccessToken` | `pulumi config set --secret pulumiAccessToken <token>` | `PULUMI_ACCESS_TOKEN` for the operator workspace (stored as K8s Secret `pulumi-api-secret`). |
-| `githubToken` | `pulumi config set --secret githubToken <token>` | Clones the private workload repo (stored as K8s Secret `git-auth-secret`). |
 
 ### Optional (have defaults)
 
@@ -220,9 +219,8 @@ npm install
 # Select / create the deployer stack.
 pulumi stack select dev   # or: pulumi stack init dev
 
-# Set the two required secrets.
+# Set the required secret.
 pulumi config set --secret pulumiAccessToken <PULUMI_ACCESS_TOKEN>
-pulumi config set --secret githubToken       <GITHUB_TOKEN>
 
 # (Optional) point at a different repo/branch/dir or workload stack.
 # pulumi config set branch refs/heads/main
@@ -414,7 +412,7 @@ pulumi env run cloud-access/aws-access -- \
 | --- | --- |
 | Stack CR stuck `Stalled (UpdateFailed)` | 3 failures reached — push a commit or bump `reconcileTrigger`. |
 | `TokenReview API is unavailable` in workspace | Missing `system:auth-delegator` binding for the workspace SA (the deployer creates this). |
-| Repo clone fails / auth error | `githubToken` missing or lacks read access to the private repo. |
+| Repo clone fails with `401 Invalid username or token` | The repo is cloned anonymously and must be public. If you add `gitAuth` back for a private repo, make sure the token is valid — GitHub rejects a bad token even on public repos. |
 | `Duplicate tag keys found ... case insensitive` | A lowercase tag collides with `aws:defaultTags` `Owner`. Don't set `owner`. |
 | `409 another update in progress` | Stale update lock — `pulumi cancel --stack pequod/k8s-hybrid-app/dev --yes`. |
 | Frontend `<pending>` URL | LoadBalancer still provisioning — re-check the Service after a minute. |

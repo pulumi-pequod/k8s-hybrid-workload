@@ -3,9 +3,6 @@ environment:
   - cloud-access/aws-access
 config:
   k8s-hybrid-workload:projectRepo: https://github.com/pulumi-pequod/k8s-hybrid-workload.git
-  k8s-hybrid-workload:pulumiAccessToken:
-    secure: AAABAG1oXcOgV4TyLltfcY58nkz9gn1TOA/F5J/NSb4OVEK++92fDPY8+1SIAEpI5rQlJ4AFqu9xFiJmB4tS5ZDtzl4kv+dHqKXRpw==
   k8s-hybrid-workload:branch: refs/heads/main
-  k8s-hybrid-workload:githubToken:
-    secure: AAABAD64n3egVkvaWNx3KCnLSfM3W3gWwLz9xW6ttDXrE0qrC1Svh/1SrA27IlF1dE2/MbWezd365c4OlzhCxXtSaxnEW+nm
-  k8s-hybrid-workload:reconcileTrigger: final-run-1790433920
+  k8s-hybrid-workload:pulumiAccessToken:
+    secure: AAABAAOj4tOSZv4Vz7A9WcCQ4C2tjN660/xSRSz9vHvGXToNcLEBmhSId5hlksCdMgtW7sndbqwtxwSIIpHdmQ5xn3kp3fCqy+ynTQ==

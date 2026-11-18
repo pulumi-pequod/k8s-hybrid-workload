@@ -96,29 +96,6 @@ const accessTokenSecret = new k8s.core.v1.Secret(
 );
 
 // ---------------------------------------------------------------------------
-// Git authentication for the operator workspace
-// ---------------------------------------------------------------------------
-// The workload source repository is private, so the operator's workspace pod
-// needs a GitHub token to clone it. Store it in a Kubernetes Secret and wire
-// it into the Stack CR via `spec.gitAuth.accessToken`.
-//
-// Supply the token as a Pulumi secret config value:
-//   pulumi config set --secret githubToken <token>
-const gitAuthSecret = new k8s.core.v1.Secret(
-    "git-auth",
-    {
-        metadata: {
-            name: "git-auth-secret",
-            namespace: operatorNamespace,
-        },
-        stringData: {
-            accessToken: config.requireSecret("githubToken"),
-        },
-    },
-    { provider },
-);
-
-// ---------------------------------------------------------------------------
 // RBAC: allow the workspace ServiceAccount to use the TokenReview API
 // ---------------------------------------------------------------------------
 // PKO v2 workspace pods authenticate the operator's gRPC calls using
@@ -171,21 +148,12 @@ const workloadStackCr = new k8s.apiextensions.CustomResource(
             // Fully-qualified target stack (org/project/stack).
             stack: workloadStack,
 
-            // Git source of the workload program.
+            // Git source of the workload program. The repo is public, so the
+            // workspace pod clones it anonymously (no gitAuth). A stale token
+            // here makes GitHub return 401 even for public repos.
             projectRepo: projectRepo,
             branch: branch,
             repoDir: repoDir,
-
-            // Authenticate to the private workload repo with a GitHub token.
-            gitAuth: {
-                accessToken: {
-                    type: "Secret",
-                    secret: {
-                        name: gitAuthSecret.metadata.name,
-                        key: "accessToken",
-                    },
-                },
-            },
 
             // Attach the Pulumi ESC environment(s) that provide AWS credentials
             // and the Kubernetes provider context to the workspace pod.
@@ -227,7 +195,7 @@ const workloadStackCr = new k8s.apiextensions.CustomResource(
     },
     {
         provider,
-        dependsOn: [accessTokenSecret, gitAuthSecret, authDelegatorBinding],
+        dependsOn: [accessTokenSecret, authDelegatorBinding],
     },
 );
 
