@@ -46,8 +46,8 @@ flowchart TB
         CLI["pulumi up<br/>(deployer: k8s-hybrid-workload)"]
     end
 
-    subgraph Git["GitHub (private repo)"]
-        REPO["pulumi-pequod/k8s-hybrid-workload<br/>branch: videmsky/workload-init<br/>dir: workload/"]
+    subgraph Git["GitHub (public repo)"]
+        REPO["pulumi-pequod/k8s-hybrid-workload<br/>branch: main<br/>dir: workload/"]
     end
 
     subgraph ESC["Pulumi ESC"]
@@ -77,10 +77,10 @@ flowchart TB
 
     CLI -->|applies Stack CR + Secrets + RBAC| CR
     CLI -.reads kubeconfig.-> K8SENV
-    REPO -->|anonymous clone (public repo)| WS
+    REPO -->|"anonymous clone (public repo)"| WS
     CR --> OP
     OP -->|creates & reconciles| WS
-    SEC -->|PULUMI_ACCESS_TOKEN / git token| WS
+    SEC -->|PULUMI_ACCESS_TOKEN| WS
     AWSENV -->|AWS creds| WS
     K8SENV -->|kubeconfig| WS
     WS <-->|stack state| STATE
