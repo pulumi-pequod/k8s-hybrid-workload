@@ -228,7 +228,7 @@ const frontendConfig = new k8s.core.v1.ConfigMap(`${appName}-frontend`, {
 const deployment = new k8s.apps.v1.Deployment(`${appName}-web`, {
     metadata: { name: `${appName}-web`, labels: appLabels },
     spec: {
-        replicas: 2,
+        replicas: 3,
         selector: { matchLabels: appLabels },
         template: {
             metadata: {
